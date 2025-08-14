@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Blog Personal</title>
+    <!-- Incluye el CDN de Tailwind CSS para un estilo moderno y responsivo -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Define una fuente base para toda la página */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* Gris claro */
+        }
+    </style>
+</head>
+<body class="antialiased text-gray-800">
+    <!-- Contenedor principal de la página, centrado y con ancho limitado -->
+    <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-10">
+
+        <!-- Encabezado del blog -->
+        <header class="text-center mb-12">
+            <h1 class="text-5xl font-extrabold text-blue-700 tracking-tight leading-tight mb-2">
+                Mi Blog de Ejemplo
+            </h1>
+            <p class="text-lg text-gray-600">
+                Un espacio para compartir ideas, proyectos y más.
+            </p>
+        </header>
+
+        <!-- Sección de artículos del blog -->
+        <main class="space-y-12">
+            <!-- Ejemplo de un artículo del blog -->
+            <article class="bg-white p-8 rounded-xl shadow-lg border border-gray-200">
+                <a href="#" class="block hover:text-blue-600 transition-colors duration-200">
+                    <h2 class="text-3xl font-bold mb-2">Primer Artículo: ¡Hola Mundo!</h2>
+                </a>
+                <p class="text-sm text-gray-500 mb-4">Publicado el 14 de agosto de 2025</p>
+                <p class="text-lg text-gray-700 leading-relaxed">
+                    Este es el primer artículo de mi blog. Aquí puedes escribir sobre cualquier cosa que te interese, desde un nuevo proyecto de programación hasta tus reflexiones personales. La clave es ser constante y compartir lo que te apasiona.
+                </p>
+                <a href="#" class="mt-4 inline-block text-blue-500 hover:text-blue-700 transition-colors duration-200 font-medium">
+                    Leer más →
+                </a>
+            </article>
+
+            <!-- Ejemplo de otro artículo del blog -->
+            <article class="bg-white p-8 rounded-xl shadow-lg border border-gray-200">
+                <a href="#" class="block hover:text-blue-600 transition-colors duration-200">
+                    <h2 class="text-3xl font-bold mb-2">Segundo Artículo: Aprendiendo Tailwind CSS</h2>
+                </a>
+                <p class="text-sm text-gray-500 mb-4">Publicado el 10 de agosto de 2025</p>
+                <p class="text-lg text-gray-700 leading-relaxed">
+                    Tailwind CSS es un framework de CSS de "utilidades primero" que me encanta. Permite construir diseños complejos rápidamente sin salir de tu HTML. ¡Es perfecto para proyectos como este blog!
+                </p>
+                <a href="#" class="mt-4 inline-block text-blue-500 hover:text-blue-700 transition-colors duration-200 font-medium">
+                    Leer más →
+                </a>
+            </article>
+
+            <!-- Puedes añadir más artículos copiando y pegando la estructura de <article> -->
+        </main>
+
+        <!-- Pie de página del blog -->
+        <footer class="text-center mt-16 text-gray-500 text-sm">
+            <p>&copy; 2025 Mi Blog Personal. Todos los derechos reservados.</p>
+        </footer>
+
+    </div>
+</body>
+</html>
