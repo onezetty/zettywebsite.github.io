@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Diferencia Porcentual</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background-color: #f4f7f6; }
+        .card { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
+        h2 { color: #333; text-align: center; }
+        .input-group { margin-bottom: 1rem; }
+        label { display: block; margin-bottom: 0.5rem; color: #666; }
+        input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 1rem; }
+        #result { margin-top: 1.5rem; padding: 1rem; border-radius: 6px; text-align: center; font-weight: bold; font-size: 1.2rem; display: none; }
+        .positive { background-color: #d4edda; color: #155724; }
+        .negative { background-color: #f8d7da; color: #721c24; }
+        .neutral { background-color: #e2e3e5; color: #383d41; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Diferencia Porcentual</h2>
+    <div class="input-group">
+        <label>Valor Inicial</label>
+        <input type="number" id="val1" placeholder="Ej: 100" oninput="calcular()">
+    </div>
+    <div class="input-group">
+        <label>Valor Final</label>
+        <input type="number" id="val2" placeholder="Ej: 150" oninput="calcular()">
+    </div>
+    <div id="result"></div>
+</div>
+
+<script>
+    function calcular() {
+        const v1 = parseFloat(document.getElementById('val1').value);
+        const v2 = parseFloat(document.getElementById('val2').value);
+        const resultDiv = document.getElementById('result');
+
+        if (!isNaN(v1) && !isNaN(v2) && v1 !== 0) {
+            // Fórmula: ((V2 - V1) / |V1|) * 100
+            const diff = ((v2 - v1) / Math.abs(v1)) * 100;
+            const diffFormateada = diff.toFixed(2);
+            
+            resultDiv.style.display = 'block';
+            resultDiv.innerText = (diff > 0 ? "+" : "") + diffFormateada + "%";
+
+            if (diff > 0) {
+                resultDiv.className = 'positive';
+            } else if (diff < 0) {
+                resultDiv.className = 'negative';
+            } else {
+                resultDiv.className = 'neutral';
+            }
+        } else {
+            resultDiv.style.display = 'none';
+        }
+    }
+</script>
+
+</body>
+</html>
