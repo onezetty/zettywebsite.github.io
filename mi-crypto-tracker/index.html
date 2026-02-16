@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Profit Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-white min-h-screen flex items-center justify-center p-6">
+
+    <div class="max-w-md w-full bg-slate-800 rounded-2xl shadow-2xl p-8 border border-slate-700">
+        <h1 class="text-2xl font-bold text-center mb-6 text-cyan-400">Calculadora de Ganancias Crypto</h1>
+        
+        <div class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium mb-1 text-slate-400">Criptomoneda</label>
+                <select id="crypto" class="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 focus:ring-2 focus:ring-cyan-500 outline-none">
+                    <option value="bitcoin">Bitcoin (BTC)</option>
+                    <option value="ethereum">Ethereum (ETH)</option>
+                    <option value="solana">Solana (SOL)</option>
+                    <option value="cardano">Cardano (ADA)</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium mb-1 text-slate-400">Fecha de Compra</label>
+                <input type="date" id="buyDate" class="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 focus:ring-2 focus:ring-cyan-500 outline-none">
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium mb-1 text-slate-400">Inversión Inicial (USD)</label>
+                <input type="number" id="investment" placeholder="Ej: 100" class="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 focus:ring-2 focus:ring-cyan-500 outline-none">
+            </div>
+
+            <button onclick="calculateProfit()" id="btn" class="w-full bg-cyan-500 hover:bg-cyan-600 text-slate-900 font-bold py-3 rounded-lg transition duration-200">
+                Calcular Resultado
+            </button>
+        </div>
+
+        <div id="result" class="mt-8 hidden border-t border-slate-700 pt-6 text-center">
+            <p class="text-slate-400 text-sm">Tu balance actual sería:</p>
+            <h2 id="currentValue" class="text-4xl font-black my-2">--</h2>
+            <p id="profitText" class="text-lg font-medium">--</p>
+        </div>
+    </div>
+
+    <script>
+        async function calculateProfit() {
+            const crypto = document.getElementById('crypto').value;
+            const buyDate = document.getElementById('buyDate').value; // Formato YYYY-MM-DD
+            const investment = parseFloat(document.getElementById('investment').value);
+            const btn = document.getElementById('btn');
+            const resultDiv = document.getElementById('result');
+
+            if (!buyDate || isNaN(investment)) return alert("Por favor completa los campos");
+
+            // Convertir fecha a DD-MM-YYYY para CoinGecko
+            const dateParts = buyDate.split('-');
+            const formattedDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
+
+            btn.innerText = "Calculando...";
+            btn.disabled = true;
+
+            try {
+                // 1. Obtener precio histórico
+                const historyRes = await fetch(`https://api.coingecko.com/api/v3/coins/${crypto}/history?date=${formattedDate}`);
+                const historyData = await historyRes.json();
+                const oldPrice = historyData.market_data.current_price.usd;
+
+                // 2. Obtener precio actual
+                const currentRes = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${crypto}&vs_currencies=usd`);
+                const currentData = await currentRes.json();
+                const currentPrice = currentData[crypto].usd;
+
+                // 3. Cálculos
+                const tokensOwned = investment / oldPrice;
+                const currentValue = tokensOwned * currentPrice;
+                const profit = currentValue - investment;
+                const profitPercent = (profit / investment) * 100;
+
+                // Mostrar resultados
+                resultDiv.classList.remove('hidden');
+                document.getElementById('currentValue').innerText = `$${currentValue.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                
+                const profitEl = document.getElementById('profitText');
+                if (profit >= 0) {
+                    profitEl.innerText = `↑ Ganaste $${profit.toFixed(2)} (${profitPercent.toFixed(2)}%)`;
+                    profitEl.className = "text-green-400 font-medium";
+                } else {
+                    profitEl.innerText = `↓ Perdiste $${Math.abs(profit).toFixed(2)} (${profitPercent.toFixed(2)}%)`;
+                    profitEl.className = "text-red-400 font-medium";
+                }
+
+            } catch (error) {
+                alert("Error al obtener datos. Revisa la fecha (no puede ser hoy) o intenta más tarde.");
+            } finally {
+                btn.innerText = "Calcular Resultado";
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
