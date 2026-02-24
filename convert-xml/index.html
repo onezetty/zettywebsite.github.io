@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XML a CSV Converter | @OneZetty</title>
+    <style>
+        body { font-family: sans-serif; max-width: 800px; margin: 40px auto; padding: 20px; line-height: 1.6; background-color: #f4f7f6; }
+        .container { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1 { color: #333; }
+        input[type="file"] { margin: 20px 0; display: block; }
+        button { background-color: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
+        button:hover { background-color: #45a049; }
+        #status { margin-top: 20px; font-weight: bold; }
+        pre { background: #eee; padding: 10px; overflow-x: auto; border-radius: 4px; font-size: 12px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Convertidor de XML a CSV</h1>
+    <p>Sube tu archivo XML para extraer los datos automáticamente a un formato CSV compatible con Excel.</p>
+    
+    <input type="file" id="fileInput" accept=".xml">
+    <button onclick="processXML()">Convertir y Descargar</button>
+
+    <div id="status"></div>
+    <div id="previewContainer" style="display:none;">
+        <h3>Vista previa (primeras filas):</h3>
+        <pre id="preview"></pre>
+    </div>
+</div>
+
+<script>
+    function processXML() {
+        const fileInput = document.getElementById('fileInput');
+        const status = document.getElementById('status');
+        const preview = document.getElementById('preview');
+        const previewContainer = document.getElementById('previewContainer');
+
+        if (!fileInput.files[0]) {
+            status.innerText = "Por favor, selecciona un archivo primero.";
+            return;
+        }
+
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            try {
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(e.target.result, "text/xml");
+                
+                // Intentamos detectar los nodos repetitivos (filas)
+                // Usualmente es el primer hijo del nodo raíz
+                const root = xmlDoc.documentElement;
+                const items = root.children;
+
+                if (items.length === 0) throw new Error("No se encontraron elementos en el XML.");
+
+                let csvRows = [];
+                let headers = [];
+
+                // 1. Obtener encabezados del primer elemento
+                const firstItemChildren = items[0].children;
+                for (let child of firstItemChildren) {
+                    headers.push(child.tagName);
+                }
+                csvRows.push(headers.join(','));
+
+                // 2. Extraer datos de cada fila
+                for (let i = 0; i < items.length; i++) {
+                    let values = [];
+                    for (let header of headers) {
+                        let val = items[i].getElementsByTagName(header)[0]?.textContent || "";
+                        // Limpiar comas y comillas para evitar errores en CSV
+                        val = val.replace(/"/g, '""');
+                        values.push(`"${val}"`);
+                    }
+                    csvRows.push(values.join(','));
+                }
+
+                const csvString = csvRows.join('\n');
+                downloadCSV(csvString, file.name.replace('.xml', '.csv'));
+
+                status.style.color = "green";
+                status.innerText = "¡Conversión exitosa!";
+                previewContainer.style.display = "block";
+                preview.innerText = csvRows.slice(0, 5).join('\n');
+
+            } catch (err) {
+                status.style.color = "red";
+                status.innerText = "Error procesando el XML: " + err.message;
+            }
+        };
+
+        reader.readAsText(file);
+    }
+
+    function downloadCSV(csvContent, fileName) {
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement("a");
+        const url = URL.createObjectURL(blob);
+        link.setAttribute("href", url);
+        link.setAttribute("download", fileName);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+</script>
+
+</body>
+</html>
