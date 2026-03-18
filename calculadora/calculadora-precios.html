@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comparador de Precio por Unidad</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-800 min-h-screen flex items-center justify-center p-4">
+
+    <div class="max-w-2xl w-full bg-white rounded-3xl shadow-xl overflow-hidden">
+        <div class="bg-indigo-600 p-6 text-center">
+            <h1 class="text-2xl font-bold text-white uppercase tracking-wider">¿Cuál conviene más?</h1>
+            <p class="text-indigo-100 text-sm">Compara el precio por unidad (kg, litro, gramo, etc.)</p>
+        </div>
+
+        <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
+            
+            <div id="card-A" class="p-5 rounded-2xl border-2 border-gray-100 transition-all">
+                <h2 class="font-bold text-indigo-600 mb-4 flex items-center">
+                    <span class="bg-indigo-100 w-8 h-8 rounded-full flex items-center justify-center mr-2">A</span> 
+                    Producto 1
+                </h2>
+                <div class="space-y-3">
+                    <label class="block text-xs font-semibold text-gray-500 uppercase">Precio Total ($)</label>
+                    <input type="number" id="priceA" oninput="compare()" placeholder="0.00" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-400 outline-none">
+                    
+                    <label class="block text-xs font-semibold text-gray-500 uppercase">Cantidad (g, L, Unid.)</label>
+                    <input type="number" id="qtyA" oninput="compare()" placeholder="Ej: 500" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-400 outline-none">
+                </div>
+                <div class="mt-6 text-center">
+                    <p class="text-sm text-gray-400">Precio por unidad:</p>
+                    <p id="unitA" class="text-2xl font-black text-gray-700">$0.00</p>
+                </div>
+            </div>
+
+            <div id="card-B" class="p-5 rounded-2xl border-2 border-gray-100 transition-all">
+                <h2 class="font-bold text-indigo-600 mb-4 flex items-center">
+                    <span class="bg-indigo-100 w-8 h-8 rounded-full flex items-center justify-center mr-2">B</span> 
+                    Producto 2
+                </h2>
+                <div class="space-y-3">
+                    <label class="block text-xs font-semibold text-gray-500 uppercase">Precio Total ($)</label>
+                    <input type="number" id="priceB" oninput="compare()" placeholder="0.00" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-400 outline-none">
+                    
+                    <label class="block text-xs font-semibold text-gray-500 uppercase">Cantidad (g, L, Unid.)</label>
+                    <input type="number" id="qtyB" oninput="compare()" placeholder="Ej: 1000" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-400 outline-none">
+                </div>
+                <div class="mt-6 text-center">
+                    <p class="text-sm text-gray-400">Precio por unidad:</p>
+                    <p id="unitB" class="text-2xl font-black text-gray-700">$0.00</p>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="verdict" class="bg-gray-50 p-4 text-center border-t border-gray-100 min-h-[60px] flex items-center justify-center">
+            <p class="text-gray-500 italic">Introduce los datos para comparar...</p>
+        </div>
+    </div>
+
+    <script>
+        function compare() {
+            const pA = parseFloat(document.getElementById('priceA').value);
+            const qA = parseFloat(document.getElementById('qtyA').value);
+            const pB = parseFloat(document.getElementById('priceB').value);
+            const qB = parseFloat(document.getElementById('qtyB').value);
+
+            const resA = (pA > 0 && qA > 0) ? (pA / qA) : 0;
+            const resB = (pB > 0 && qB > 0) ? (pB / qB) : 0;
+
+            document.getElementById('unitA').innerText = `$${resA.toFixed(4)}`;
+            document.getElementById('unitB').innerText = `$${resB.toFixed(4)}`;
+
+            const cardA = document.getElementById('card-A');
+            const cardB = document.getElementById('card-B');
+            const verdict = document.getElementById('verdict');
+
+            // Reset estilos
+            cardA.className = cardB.className = "p-5 rounded-2xl border-2 border-gray-100 transition-all";
+
+            if (resA > 0 && resB > 0) {
+                if (resA < resB) {
+                    highlight(cardA, "Producto 1 es más económico", resA, resB);
+                } else if (resB < resA) {
+                    highlight(cardB, "Producto 2 es más económico", resB, resA);
+                } else {
+                    verdict.innerHTML = "<span class='text-gray-600 font-bold font-bold'>¡Cuestan lo mismo!</span>";
+                }
+            }
+        }
+
+        function highlight(card, message, cheaper, expensive) {
+            card.classList.add('border-green-500', 'bg-green-50', 'scale-105');
+            const diff = ((expensive - cheaper) / expensive * 100).toFixed(1);
+            document.getElementById('verdict').innerHTML = `
+                <div class="text-green-700 font-bold">
+                    ✅ ${message} <br>
+                    <span class="text-xs font-normal italic text-green-600">Ahorras un ${diff}% comparado con la otra opción</span>
+                </div>`;
+        }
+    </script>
+</body>
+</html>
