@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Precio Base</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+    <div class="bg-white p-8 rounded-xl shadow-lg max-w-md w-full">
+        <h1 class="text-2xl font-bold text-gray-800 mb-6 text-center">Calculadora Sin Comisiones</h1>
+        
+        <div class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Precio Final (con comisión)</label>
+                <input type="number" id="precioFinal" placeholder="Ej: 116" 
+                    class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Comisión Pactada (%)</label>
+                <input type="number" id="comision" placeholder="Ej: 16" 
+                    class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+            </div>
+
+            <button onclick="calcular()" 
+                class="w-full bg-blue-600 text-white py-2 rounded-md font-semibold hover:bg-blue-700 transition duration-200">
+                Calcular Precio Base
+            </button>
+
+            <hr class="my-6">
+
+            <div id="resultadoArea" class="hidden space-y-2 bg-blue-50 p-4 rounded-lg">
+                <p class="text-sm text-gray-600">Precio Neto (sin comisión):</p>
+                <p id="precioNeto" class="text-3xl font-bold text-blue-700">$0.00</p>
+                <p class="text-xs text-gray-500 mt-2 italic">* El monto de la comisión fue de: <span id="montoComision">$0.00</span></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function calcular() {
+            const precioFinal = parseFloat(document.getElementById('precioFinal').value);
+            const porcentajeComision = parseFloat(document.getElementById('comision').value);
+            const displayArea = document.getElementById('resultadoArea');
+
+            if (isNaN(precioFinal) || isNaN(porcentajeComision)) {
+                alert("Por favor, ingresa números válidos.");
+                return;
+            }
+
+            // Lógica: Precio Base = Precio Final / (1 + comision/100)
+            const precioNeto = precioFinal / (1 + (porcentajeComision / 100));
+            const diferencia = precioFinal - precioNeto;
+
+            // Mostrar resultados
+            document.getElementById('precioNeto').innerText = `$${precioNeto.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            document.getElementById('montoComision').innerText = `$${diferencia.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            
+            displayArea.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
