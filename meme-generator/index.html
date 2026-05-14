@@ -3,13 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meme Generator Clone</title>
+    <title>Meme Generator Clone - Modo Oscuro</title>
     <style>
         :root {
-            --bg-color: #f4f4f9;
-            --text-color: #333;
-            --primary-color: #007bff;
-            --hover-color: #0056b3;
+            --bg-color: #121212;
+            --text-color: #e0e0e0;
+            --primary-color: #3b82f6;
+            --hover-color: #2563eb;
+            --panel-bg: #1e1e1e;
+            --input-bg: #2d2d2d;
+            --border-color: #444;
         }
         
         body {
@@ -28,10 +31,10 @@
         }
 
         .controls {
-            background: white;
+            background: var(--panel-bg);
             padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.5);
             width: 100%;
             max-width: 500px;
             display: flex;
@@ -42,16 +45,23 @@
 
         input[type="file"], input[type="text"] {
             padding: 10px;
-            border: 1px solid #ccc;
+            border: 1px solid var(--border-color);
+            background-color: var(--input-bg);
+            color: var(--text-color);
             border-radius: 4px;
             font-size: 16px;
             width: 100%;
             box-sizing: border-box;
+            color-scheme: dark;
+        }
+
+        input[type="text"]::placeholder {
+            color: #888;
         }
 
         button {
             background-color: var(--primary-color);
-            color: white;
+            color: #ffffff;
             border: none;
             padding: 12px;
             font-size: 16px;
@@ -66,7 +76,8 @@
         }
 
         button:disabled {
-            background-color: #cccccc;
+            background-color: #555555;
+            color: #888888;
             cursor: not-allowed;
         }
 
@@ -74,8 +85,8 @@
             max-width: 100%;
             overflow: hidden;
             border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            background: #fff;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.5);
+            background: var(--panel-bg);
         }
 
         canvas {
@@ -170,7 +181,7 @@
             
             // Crear un enlace temporal para forzar la descarga
             const link = document.createElement('a');
-            link.download = 'mi_meme.png';
+            link.download = 'meme_generado.png';
             link.href = dataURL;
             document.body.appendChild(link);
             link.click();
